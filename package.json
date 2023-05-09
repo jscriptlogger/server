@@ -1,0 +1,20 @@
+{
+  "devDependencies": {
+    "@types/node": "18.x",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "typescript": "5.x"
+  },
+  "private": false,
+  "scripts": {
+    "start": "TS_NODE_PROJECT=server/tsconfig.json npx ts-node server"
+  },
+  "dependencies": {
+    "@jslogger/schema": "0.x",
+    "@victorqueiroz/logger": "0.x",
+    "jsbuffer": "0.x",
+    "mongodb": "5.x",
+    "uWebSockets.js": "uNetworking/uWebSockets.js#v20.x"
+  },
+  "version": "0.0.1"
+}

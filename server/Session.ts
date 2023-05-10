@@ -10,8 +10,6 @@ import {
   ClientMessage,
   ServerMessage,
   acknowledgeMessage,
-  encodeMessageResultError,
-  encodeMessageResultSuccess,
   encodeServerMessageTrait,
   messageRequest,
   messageResultError,

@@ -1,20 +1,14 @@
-version: "3.9"
+version: '3.9'
 services:
   backend:
     image: node:18.16-bullseye
     command: yarn start
     working_dir: /opt/app
     volumes:
-      - ".:/opt/app"
+      - '.:/opt/app'
     ports:
-      - "3333:3333"
+      - '3333:3333'
   database:
     image: mongo:6.0.5-jammy
     ports:
-      - "27017:27017"
-  npm:
-    image: verdaccio/verdaccio:5
-    ports:
-      - 4873:4873
-    volumes:
-      - "../data/verdaccio:/verdaccio"
+      - '27017:27017'

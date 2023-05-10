@@ -1,6 +1,6 @@
 import { Collection, Db, ObjectId } from 'mongodb';
 import { IModelValue, Value } from './model';
-import { DatabaseFailure } from '../exceptions';
+import { DatabaseFailure } from '../../exception';
 
 export default class ValueCommands {
   readonly #collection: Collection<IModelValue>;

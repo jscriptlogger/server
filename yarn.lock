@@ -27,10 +27,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@jslogger/schema@0.x":
-  version "0.0.23"
-  resolved "http://localhost:4873/@jslogger/schema/-/schema-0.0.23.tgz#05426a2e6baa867486bff8c3741f81a23b57fee4"
-  integrity sha512-5PGURqVUUh6GcgBTb3GlFrIztx8U+wXRB9AQd8qBsh5D5q2eddslqhkwoFvbpiBp5Pt1g2n7ojDOnz46xFT/7w==
+"@jscriptlogger/schema@0.x":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@jscriptlogger/schema/-/schema-0.0.29.tgz#1c240c5561a3053ac6e77fbba7a234c0f9ba440d"
+  integrity sha512-5iKejRu9uYkLt/RFBap0ogvsXbi9vSBc2JVAgkoRlTHUmvOL9U/i7RCWyiWU1UPa0CtUVLT5o+kMC9bbevcBDg==
   dependencies:
     jsbuffer "0.x"
 

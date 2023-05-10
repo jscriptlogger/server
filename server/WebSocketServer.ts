@@ -13,7 +13,7 @@ import {
   messageProtocolError,
   protocolErrorDecodeMessageError,
   protocolErrorExpectingBinaryMessage,
-} from '@jslogger/schema/src/protocol';
+} from '@jscriptlogger/schema/src/protocol';
 import { ILogger } from '@victorqueiroz/logger';
 import { Codec } from 'jsbuffer/codec';
 

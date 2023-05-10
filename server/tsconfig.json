@@ -1,5 +1,6 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {},
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "../exception/exceptions.d.ts"],
+  "references": [{ "path": "../app" }]
 }

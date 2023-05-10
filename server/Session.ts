@@ -1,18 +1,14 @@
 import { WebSocket } from 'uWebSockets.js';
 import { Db, ObjectId } from 'mongodb';
-import ValueCommands from './value/ValueCommands';
-import {
-  databaseValueToSchemaValue,
-  schemaValueToDatabaseValue,
-} from './value/converter';
 import {
   Error,
   errorCallNotImplemented,
   errorDatabaseFailure,
   errorUnknownFailure,
-} from '@jslogger/schema/src/Error';
+} from '@jscriptlogger/schema/src/protocol/Error';
 import {
   ClientMessage,
+  ServerMessage,
   acknowledgeMessage,
   encodeMessageResultError,
   encodeMessageResultSuccess,
@@ -20,13 +16,23 @@ import {
   messageRequest,
   messageResultError,
   messageResultSuccess,
-} from '@jslogger/schema/src/protocol';
-import { Request } from '@jslogger/schema/src/Request';
-import { Result } from '@jslogger/schema/src/Result';
-import { void_t } from '@jslogger/schema/src/void';
-import { objectId } from '@jslogger/schema/src/objectId';
-import { saveValueResult } from '@jslogger/schema/src/value';
-import PageCommands from './page/PageCommands';
+} from '@jscriptlogger/schema/src/protocol';
+import { Request } from '@jscriptlogger/schema/src/protocol/Request';
+import { Result } from '@jscriptlogger/schema/src/protocol/Result';
+import { void_t } from '@jscriptlogger/schema/src/protocol/void';
+import { Exception, DatabaseFailure } from '../exception';
+import { ILogger } from '@victorqueiroz/logger';
+import { Codec } from 'jsbuffer/codec';
+
+// app
+import { objectId } from '@jscriptlogger/schema/src/app/objectId';
+import { saveValueResult } from '@jscriptlogger/schema/src/app/value';
+import ValueCommands from '../app/value/ValueCommands';
+import {
+  databaseValueToSchemaValue,
+  schemaValueToDatabaseValue,
+} from '../app/value/converter';
+import PageCommands from '../app/page/PageCommands';
 import {
   addPageLineResult,
   createPageResult,
@@ -34,11 +40,8 @@ import {
   getPagesResult,
   page,
   pageLine,
-} from '@jslogger/schema/src/page';
-import { Exception, DatabaseFailure } from './exceptions';
-import { PageLineType } from './page/model';
-import { ILogger } from '@victorqueiroz/logger';
-import { Codec } from 'jsbuffer/codec';
+} from '@jscriptlogger/schema/src/app/page';
+import { PageLineType } from '../app/page/model';
 
 class CallNotImplementedException extends Exception {}
 
@@ -86,10 +89,10 @@ export default class Session {
   public onClientMessage(clientMessage: ClientMessage) {
     this.#logger.log('received client message: %o', clientMessage);
     switch (clientMessage._name) {
-      case 'protocol.messageRequest':
+      case 'protocol.index.messageRequest':
         this.#onMessageRequest(clientMessage);
         break;
-      case 'protocol.acknowledgeMessage':
+      case 'protocol.index.acknowledgeMessage':
         this.#logger.log('receive acknowledgement: %o', clientMessage);
     }
   }
@@ -133,6 +136,7 @@ export default class Session {
         );
       });
   }
+  public onCreated() {}
   public onSocket(ws: WebSocket<unknown> | null) {
     if (ws === this.#socket) {
       return;
@@ -148,16 +152,10 @@ export default class Session {
       result,
       acknowledged: false,
     });
-    let view: Uint8Array;
-    switch (result._name) {
-      case 'protocol.messageResultError':
-        view = this.#encoder.encode(encodeMessageResultError, result);
-        break;
-      case 'protocol.messageResultSuccess':
-        view = this.#encoder.encode(encodeMessageResultSuccess, result);
-        break;
-    }
-    this.#send(view);
+    this.#sendServerMessage(result);
+  }
+  #sendServerMessage(result: ServerMessage) {
+    this.#send(this.#encoder.encode(encodeServerMessageTrait, result));
   }
   #sendAck(messageId: string) {
     this.#send(
@@ -188,7 +186,7 @@ export default class Session {
   async #onRequest(request: Request): Promise<Result> {
     let result: Result = void_t();
     switch (request._name) {
-      case 'page.CreatePage': {
+      case 'app.page.CreatePage': {
         const pageId = await this.#commandMap.page.createPage({
           title: request.title,
         });
@@ -199,7 +197,7 @@ export default class Session {
         });
         break;
       }
-      case 'value.SaveValue': {
+      case 'app.value.SaveValue': {
         const resultId = await this.#commandMap.value.saveValue(
           schemaValueToDatabaseValue(request.value)
         );
@@ -210,13 +208,14 @@ export default class Session {
         });
         break;
       }
-      case 'page.GetPages': {
+      case 'app.page.GetPages': {
         const pages = await this.#commandMap.page.getPages({
           offset: request.offset,
           limit: request.limit,
         });
         result = getPagesResult({
-          list: pages.map((p) =>
+          count: pages.count.toString(),
+          list: pages.list.map((p) =>
             page({
               id: objectId({
                 value: p._id.toHexString(),
@@ -227,14 +226,15 @@ export default class Session {
         });
         break;
       }
-      case 'page.GetPageLines': {
+      case 'app.page.GetPageLines': {
         const lines = await this.#commandMap.page.getPageLines({
           pageId: new ObjectId(request.pageId.value),
           offset: request.offset,
           limit: request.limit,
         });
         result = getPageLinesResult({
-          list: lines.map((l) =>
+          count: lines.count.toString(),
+          list: lines.list.map((l) =>
             pageLine({
               id: objectId({
                 value: l._id.toHexString(),
@@ -245,13 +245,13 @@ export default class Session {
         });
         break;
       }
-      case 'page.AddPageLine': {
+      case 'app.page.AddPageLine': {
         let lineType: PageLineType;
         switch (request.lineType._name) {
-          case 'page.lineTypeError':
+          case 'app.page.lineTypeError':
             lineType = PageLineType.Error;
             break;
-          case 'page.lineTypeLog':
+          case 'app.page.lineTypeLog':
             lineType = PageLineType.Log;
             break;
         }

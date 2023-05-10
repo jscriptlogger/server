@@ -1,7 +1,8 @@
 import { Db, ObjectId } from 'mongodb';
 import { IModelPage, IModelPageLine, PageLineType } from './model';
-import { DatabaseFailure, ResourceNotFoundError } from '../exceptions';
+import { DatabaseFailure, ResourceNotFoundError } from '../../exception';
 import { IModelValue, Value, ValueType } from '../value/model';
+import { Filter } from 'mongodb';
 
 export default class PageCommands {
   readonly #pages;
@@ -12,10 +13,19 @@ export default class PageCommands {
     this.#values = db.collection<IModelValue>('values');
     this.#pageLines = db.collection<IModelPageLine>('pageLines');
   }
-  public getPages({ offset, limit }: { offset: number; limit: number }) {
-    return this.#pages.find().skip(offset).limit(limit).toArray();
+  public async getPages({ offset, limit }: { offset: number; limit: number }) {
+    const query: Filter<IModelPage> = {};
+    const cursor = this.#pages.find(query).sort('createdAt', 'descending');
+    const [count, list] = await Promise.all([
+      this.#pages.countDocuments(query),
+      cursor.skip(offset).limit(limit).toArray(),
+    ]);
+    return {
+      list,
+      count,
+    };
   }
-  public getPageLines({
+  public async getPageLines({
     pageId,
     offset,
     limit,
@@ -24,13 +34,18 @@ export default class PageCommands {
     offset: number;
     limit: number;
   }) {
-    return this.#pageLines
-      .find({
-        pageId,
-      })
-      .skip(offset)
-      .limit(limit)
-      .toArray();
+    const query = {
+      pageId,
+    };
+    const cursor = this.#pageLines.find(query);
+    const [list, count] = await Promise.all([
+      cursor.skip(offset).limit(limit).toArray(),
+      this.#pageLines.countDocuments(query),
+    ]);
+    return {
+      list,
+      count,
+    };
   }
   public async addPageLine({
     line,

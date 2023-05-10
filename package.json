@@ -10,7 +10,7 @@
     "start": "TS_NODE_PROJECT=server/tsconfig.json npx ts-node server"
   },
   "dependencies": {
-    "@jslogger/schema": "0.x",
+    "@jscriptlogger/schema": "0.x",
     "@victorqueiroz/logger": "0.x",
     "jsbuffer": "0.x",
     "mongodb": "5.x",

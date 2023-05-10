@@ -1,6 +1,6 @@
 import { Value as ModelValue, ValueType } from './model';
 import { ObjectId } from 'mongodb';
-import { objectId } from '@jslogger/schema/src/objectId';
+import { objectId } from '@jscriptlogger/schema/src/app/objectId';
 import {
   Value as SchemaValue,
   valueNaN,
@@ -14,7 +14,7 @@ import {
   valueBoolean,
   boolTrue,
   boolFalse,
-} from '@jslogger/schema/src/value';
+} from '@jscriptlogger/schema/src/app/value';
 
 export function databaseValueToSchemaValue(value: ModelValue): SchemaValue {
   switch (value.type) {
@@ -58,32 +58,32 @@ export function databaseValueToSchemaValue(value: ModelValue): SchemaValue {
 
 export function schemaValueToDatabaseValue(value: SchemaValue): ModelValue {
   switch (value._name) {
-    case 'value.valueValueRef':
+    case 'app.value.valueValueRef':
       return {
         type: ValueType.Reference,
         valueId: new ObjectId(value.id.value),
       };
-    case 'value.valueNumber':
+    case 'app.value.valueNumber':
       return {
         type: ValueType.Number,
         value: value.value,
       };
-    case 'value.valueString':
+    case 'app.value.valueString':
       return {
         type: ValueType.String,
         value: value.value,
       };
-    case 'value.valueBoolean':
+    case 'app.value.valueBoolean':
       return {
         type: ValueType.Boolean,
-        value: value.value._name === 'value.boolTrue',
+        value: value.value._name === 'app.value.boolTrue',
       };
-    case 'value.valueVector':
+    case 'app.value.valueVector':
       return {
         type: ValueType.Array,
         value: value.value.map((item) => schemaValueToDatabaseValue(item)),
       };
-    case 'value.valueObject':
+    case 'app.value.valueObject':
       return {
         type: ValueType.Object,
         value: value.value.map(
@@ -94,15 +94,15 @@ export function schemaValueToDatabaseValue(value: SchemaValue): ModelValue {
             ] as [ModelValue, ModelValue]
         ),
       };
-    case 'value.valueNaN':
+    case 'app.value.valueNaN':
       return {
         type: ValueType.NaN,
       };
-    case 'value.valueNull':
+    case 'app.value.valueNull':
       return {
         type: ValueType.Null,
       };
-    case 'value.valueUndefined':
+    case 'app.value.valueUndefined':
       return {
         type: ValueType.Undefined,
       };

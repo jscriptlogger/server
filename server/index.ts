@@ -1,7 +1,6 @@
 import { MongoClient } from 'mongodb';
 import WebSocketServer from './WebSocketServer';
 import LoggerNode from '@victorqueiroz/logger/node';
-import { LogLevel } from '@victorqueiroz/logger';
 
 (async () => {
   let port =
@@ -18,9 +17,7 @@ import { LogLevel } from '@victorqueiroz/logger';
     port = 3333;
   }
   const mongoClient = await MongoClient.connect('mongodb://database:27017');
-  const logger = new LoggerNode(['Server'], {
-    logLevel: LogLevel.Debug,
-  });
+  const logger = new LoggerNode(['LoggerServer']);
   const app = new WebSocketServer({
     logger,
     db: mongoClient.db('logger'),

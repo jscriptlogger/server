@@ -28,9 +28,9 @@
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
 "@jscriptlogger/schema@0.x":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@jscriptlogger/schema/-/schema-0.0.32.tgz#0e8032e7fcf9e00777e899f808b5beb718ead0b5"
-  integrity sha512-NnFCWgt9FwaLk+4VZ1NExcMg0J2W0YR+YXugmpsh7xPGPM2zVajqAT1U2iVOQezMDR+60tohGogtk52T/x7bVQ==
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@jscriptlogger/schema/-/schema-0.0.33.tgz#0a8350bb9bc4b9e29caef21fbafdd78528f2c5fe"
+  integrity sha512-m4nnfx4szkC+X0HmaoCOyLWWo4Z2mlAYe+UdpJn8RtnIk5uButt9Z9ozEZdLzMiRX0PN3YXqMixrSIg+xp3ajQ==
   dependencies:
     jsbuffer "0.x"
 

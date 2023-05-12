@@ -34,6 +34,7 @@ import PageCommands from '../app/page/PageCommands';
 import {
   addPageLineResult,
   createPageResult,
+  getFirstPageFromTitleResult,
   getPageLinesResult,
   getPagesResult,
   page,
@@ -262,6 +263,19 @@ export default class Session {
           id: objectId({
             value: lineId.toString(),
           }),
+        });
+        break;
+      }
+      case 'app.page.GetFirstPageFromTitle': {
+        const page = await this.#commandMap.page.getFirstPageFromTitle(
+          request.title
+        );
+        result = getFirstPageFromTitleResult({
+          id: page
+            ? objectId({
+                value: page._id.toHexString(),
+              })
+            : null,
         });
         break;
       }

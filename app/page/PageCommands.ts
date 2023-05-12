@@ -47,6 +47,10 @@ export default class PageCommands {
       count,
     };
   }
+  public async getFirstPageFromTitle(title: string){
+
+    return await this.#pages.findOne({ title });
+  }
   public async addPageLine({
     line,
     type,

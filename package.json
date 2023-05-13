@@ -5,6 +5,9 @@
     "ts-node": "^10.9.1",
     "typescript": "5.x"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "private": false,
   "scripts": {
     "start": "TS_NODE_PROJECT=server/tsconfig.json npx ts-node server"

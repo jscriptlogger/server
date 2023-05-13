@@ -17,12 +17,11 @@ import { LogLevel } from '@victorqueiroz/logger';
   ) {
     port = 3333;
   }
-  const dbHostname = process.env['DB_ADDRESS'];
+  const dbHostname = process.env['DB_HOSTNAME'];
   const dbUsername = process.env['DB_USERNAME'];
   const dbPassword = process.env['DB_PASSWORD'];
-  const mongoClient = await MongoClient.connect(
-    `mongodb://${dbUsername}:${dbPassword}@${dbHostname}:27017`
-  );
+  const mongodbUri = `mongodb+srv://${dbUsername}:${dbPassword}@${dbHostname}`;
+  const mongoClient = await MongoClient.connect(mongodbUri);
   const logger = new LoggerNode(['LoggerServer'], {
     logLevel: LogLevel.Log,
   });
